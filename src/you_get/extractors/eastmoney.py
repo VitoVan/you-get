@@ -5,7 +5,7 @@ return_info = None
 
 from ..common import *
 
-def eastmoney_download(url, output_dir = '.', merge = True, info_only = False, **kwargs):
+def eastmoney_download(url, output_dir = '.', output_file = None, merge = True, info_only = False, **kwargs):
     if "video.eastmoney.com" in url:
         html = get_content(url)
         title = match1(html, r'<h1>(.+)</h1>')
@@ -16,7 +16,7 @@ def eastmoney_download(url, output_dir = '.', merge = True, info_only = False, *
         _, ext, size = url_info(url)
         print_info(site_info, title, ext, size)
         if not info_only:
-            download_urls([url], title, ext, size, output_dir = output_dir, merge = merge)
+            download_urls([url], title, ext, size, output_dir = output_dir, merge = merge, output_file = output_file)
 
 site_info = "video.eastmoney.com"
 download = eastmoney_download
