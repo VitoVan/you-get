@@ -1268,8 +1268,8 @@ def url_to_module(url):
 def any_download_info(url, **kwargs):
     m, url = url_to_module(url)
     m.download(url, **kwargs)
-    if hasattr(m, '_info'):
-        return m._info
+    if hasattr(m, 'return_info'):
+        return m.return_info
 
 def any_download(url, **kwargs):
     m, url = url_to_module(url)
