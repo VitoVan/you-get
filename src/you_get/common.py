@@ -318,14 +318,13 @@ def get_content(url, headers={}, decoded=True):
         data = ungzip(data)
     elif content_encoding == 'deflate':
         data = undeflate(data)
-
     # Decode the response body
     if decoded:
         charset = match1(response.getheader('Content-Type'), r'charset=([\w-]+)')
         if charset is not None:
-            data = data.decode(charset)
+            data = data.decode(charset, errors='ignore')
         else:
-            data = data.decode('utf-8')
+            data = data.decode('utf-8', errors='ignore')
 
     return data
 
@@ -1265,6 +1264,12 @@ def url_to_module(url):
             return url_to_module(location)
         else:
             return import_module('you_get.extractors.universal'), url
+
+def any_download_info(url, **kwargs):
+    m, url = url_to_module(url)
+    m.download(url, **kwargs)
+    if hasattr(m, '_info'):
+        return m._info
 
 def any_download(url, **kwargs):
     m, url = url_to_module(url)
