@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 __all__ = ['yicai_download']
+_info = None
 
 from ..common import *
 
@@ -11,6 +12,8 @@ def yicai_download(url, output_dir = '.', merge = True, info_only = False, **kwa
         title = match1(html, r'<h1 class="f-ff3">(.+)</h1>')
         url = match1(html, r'<source.+?src="([^"]+)"')
         _, ext, size = url_info(url)
+        # set info for programmable use
+        _info = (site_info, title, ext, size, url)
         print_info(site_info, title, ext, size)
         if not info_only:
             download_urls([url], title, ext, size, output_dir = output_dir, merge = merge)
