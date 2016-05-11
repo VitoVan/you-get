@@ -14,9 +14,6 @@ def eastmoney_download(url, output_dir = '.', merge = True, info_only = False, *
         frame_html = get_content(frame_url)
         url = match1(frame_html, r'var mp4 = "([^"]+)"')
         _, ext, size = url_info(url)
-        # set info for programmable use
-        global return_info
-        return_info = (site_info, title, ext, size, url)
         print_info(site_info, title, ext, size)
         if not info_only:
             download_urls([url], title, ext, size, output_dir = output_dir, merge = merge)
