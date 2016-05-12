@@ -86,7 +86,7 @@ def video_info(vid,**kwargs):
     urls = re.findall(r'^[^#][^\r]*',m3u8_list,re.MULTILINE)
     return ext,urls
 
-def letv_download_by_vid(vid,title, output_dir='.', merge=True, info_only=False,**kwargs):
+def letv_download_by_vid(vid,title, output_dir='.', output_file=None, merge=True, info_only=False,**kwargs):
     ext , urls = video_info(vid,**kwargs)
     size = 0
     for i in urls:
@@ -95,9 +95,9 @@ def letv_download_by_vid(vid,title, output_dir='.', merge=True, info_only=False,
 
     print_info(site_info, title, ext, size)
     if not info_only:
-        download_urls(urls, title, ext, size, output_dir=output_dir, merge=merge)
+        download_urls(urls, title, ext, size, output_dir=output_dir,output_file=output_file, merge=merge)
 
-def letvcloud_download_by_vu(vu, uu, title=None, output_dir='.', merge=True, info_only=False):
+def letvcloud_download_by_vu(vu, uu, title=None, output_dir='.', output_file=None, merge=True, info_only=False):
     #ran = float('0.' + str(random.randint(0, 9999999999999999))) # For ver 2.1
     #str2Hash = 'cfflashformatjsonran{ran}uu{uu}ver2.2vu{vu}bie^#@(%27eib58'.format(vu = vu, uu = uu, ran = ran)  #Magic!/ In ver 2.1
     argumet_dict ={'cf' : 'flash', 'format': 'json', 'ran': str(int(time.time())), 'uu': str(uu),'ver': '2.2', 'vu': str(vu), }
@@ -116,25 +116,25 @@ def letvcloud_download_by_vu(vu, uu, title=None, output_dir='.', merge=True, inf
     ext = 'mp4'
     print_info(site_info, title, ext, size)
     if not info_only:
-        download_urls(urls, title, ext, size, output_dir=output_dir, merge=merge)
+        download_urls(urls, title, ext, size, output_dir=output_dir,output_file=output_file, merge=merge)
 
-def letvcloud_download(url, output_dir='.', merge=True, info_only=False):
+def letvcloud_download(url, output_dir='.', output_file=None, merge=True, info_only=False):
     qs = parse.urlparse(url).query
     vu = match1(qs, r'vu=([\w]+)')
     uu = match1(qs, r'uu=([\w]+)')
     title = "LETV-%s" % vu
-    letvcloud_download_by_vu(vu, uu, title=title, output_dir=output_dir, merge=merge, info_only=info_only)
+    letvcloud_download_by_vu(vu, uu, title=title, output_dir=output_dir,output_file=output_file, merge=merge, info_only=info_only)
 
-def letv_download(url, output_dir='.', merge=True, info_only=False ,**kwargs):
+def letv_download(url, output_dir='.', output_file=None, merge=True, info_only=False ,**kwargs):
     if re.match(r'http://yuntv.letv.com/', url):
-        letvcloud_download(url, output_dir=output_dir, merge=merge, info_only=info_only)
+        letvcloud_download(url, output_dir=output_dir,output_file=output_file, merge=merge, info_only=info_only)
     else:
         html = get_content(url)
         vid = match1(url, r'http://www.letv.com/ptv/vplay/(\d+).html') or \
             match1(url, r'http://www.le.com/ptv/vplay/(\d+).html') or \
             match1(html, r'vid="(\d+)"')
         title = match1(html,r'name="irTitle" content="(.*?)"')
-        letv_download_by_vid(vid, title=title, output_dir=output_dir, merge=merge, info_only=info_only,**kwargs)
+        letv_download_by_vid(vid, title=title, output_dir=output_dir,output_file=output_file, merge=merge, info_only=info_only,**kwargs)
 
 site_info = "Le.com"
 download = letv_download

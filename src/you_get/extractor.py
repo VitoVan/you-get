@@ -203,6 +203,7 @@ class VideoExtractor():
             # For legacy main()
             download_urls(urls, self.title, ext, total_size,
                           output_dir=kwargs['output_dir'],
+                          output_file=kwargs['output_file'],
                           merge=kwargs['merge'],
                           av=stream_id in self.dash_streams)
             if not kwargs['caption']:
