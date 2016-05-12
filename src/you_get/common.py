@@ -697,7 +697,7 @@ def download_urls(urls, title, ext, total_size, output_dir='.', refer=None, merg
             pass
 
     title = tr(get_filename(title))
-    output_filename = output_file or get_output_filename(urls, title, ext, output_dir, merge)
+    output_filename = get_output_filename(urls, title, ext, output_dir, merge)
     output_filepath = os.path.join(output_dir, output_filename)
 
     if total_size:
@@ -711,7 +711,7 @@ def download_urls(urls, title, ext, total_size, output_dir='.', refer=None, merg
 
     if len(urls) == 1:
         url = urls[0]
-        print('Downloading %s ...' % tr(output_filename))
+        print('Downloading %s ...' % tr(title))
         bar.update()
         url_save(url, output_filepath, bar, refer = refer, faker = faker, headers = headers)
         bar.done()
@@ -791,7 +791,9 @@ def download_urls(urls, title, ext, total_size, output_dir='.', refer=None, merg
 
         else:
             print("Can't merge %s files" % ext)
-
+            
+    final_output_filepath = os.path.join(output_dir, output_file)
+    os.rename(output_filepath, final_output_filepath)
     print()
 
 def download_urls_chunked(urls, title, ext, total_size, output_dir='.', refer=None, merge=True, faker=False, headers = {}):
