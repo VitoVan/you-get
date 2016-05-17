@@ -4,7 +4,7 @@ __all__ = ['qq_download']
 
 from ..common import *
 
-def qq_download_by_vid(vid, title, output_dir='.', output_file=None, merge=True, info_only=False):
+def qq_download_by_vid(vid, title, output_dir='.', merge=True, info_only=False, output_file=None):
     api = "http://h5vv.video.qq.com/getinfo?otype=json&platform=10901&vid=%s" % vid
     content = get_html(api)
     output_json = json.loads(match1(content, r'QZOutputJson=(.*)')[:-1])
@@ -19,10 +19,12 @@ def qq_download_by_vid(vid, title, output_dir='.', output_file=None, merge=True,
     _, ext, size = url_info(url, faker=True)
 
     print_info(site_info, title, ext, size)
-    if not info_only:
+    if info_only:
+        return size
+    else:
         download_urls([url], title, ext, size, output_dir=output_dir, merge=merge, output_file=output_file)
 
-def qq_download(url, output_dir='.', output_file=None, merge=True, info_only=False, **kwargs):
+def qq_download(url, output_dir='.', merge=True, info_only=False, output_file=None, **kwargs):
     if 'v.qq.com/page' in url:
         # for URLs like this:
         # http://v.qq.com/page/k/9/7/k0194pwgw97.html
@@ -46,7 +48,7 @@ def qq_download(url, output_dir='.', output_file=None, merge=True, info_only=Fal
         # http://v.qq.com/cover/p/ps6mnfqyrfo7es3.html?vid=q0181hpdvo5
         title = matchall(content, [r'title\s*:\s*"\s*([^"]+)"'])[-1]
 
-    qq_download_by_vid(vid, title, output_dir, merge, info_only, output_file=output_file)
+    return qq_download_by_vid(vid, title, output_dir, merge, info_only, output_file=output_file)
 
 site_info = "QQ.com"
 download = qq_download

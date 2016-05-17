@@ -113,13 +113,15 @@ class Iqiyi(VideoExtractor):
         return json.loads(get_content(vmsreq))
 
     def download_playlist_by_url(self, url, **kwargs):
+        return_info = None
         self.url = url
 
         video_page = get_content(url)
         videos = set(re.findall(r'<a href="(http://www\.iqiyi\.com/v_[^"]+)"', video_page))
 
         for video in videos:
-            self.__class__().download_by_url(video, **kwargs)
+            return_info = self.__class__().download_by_url(video, **kwargs)
+        return return_info
 
     def prepare(self, **kwargs):
         assert self.url or self.vid

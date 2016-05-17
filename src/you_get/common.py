@@ -1269,7 +1269,7 @@ def url_to_module(url):
 
 def any_download(url, **kwargs):
     m, url = url_to_module(url)
-    m.download(url, **kwargs)
+    return m.download(url, **kwargs)
 
 def any_download_playlist(url, **kwargs):
     m, url = url_to_module(url)

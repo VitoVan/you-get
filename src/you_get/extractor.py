@@ -47,8 +47,8 @@ class VideoExtractor():
             self.streams_sorted = [dict([('itag', stream_type['itag'])] + list(self.streams[stream_type['itag']].items())) for stream_type in self.__class__.stream_types if stream_type['itag'] in self.streams]
 
         self.extract(**kwargs)
-
-        self.download(**kwargs)
+        return_info = self.download(**kwargs)
+        return return_info
 
     def download_by_vid(self, vid, **kwargs):
         self.url = None
@@ -78,6 +78,7 @@ class VideoExtractor():
         #raise NotImplementedError()
 
     def p_stream(self, stream_id):
+        return_info = None
         if stream_id in self.streams:
             stream = self.streams[stream_id]
         else:
@@ -99,6 +100,7 @@ class VideoExtractor():
 
         if 'size' in stream:
             print("      size:          %s MiB (%s bytes)" % (round(stream['size'] / 1048576, 1), stream['size']))
+            return_info = stream['size']
 
         if 'itag' in stream:
             print("    # download-with: %s" % log.sprint("you-get --itag=%s [URL]" % stream_id, log.UNDERLINE))
@@ -106,6 +108,7 @@ class VideoExtractor():
             print("    # download-with: %s" % log.sprint("you-get --format=%s [URL]" % stream_id, log.UNDERLINE))
 
         print()
+        return return_info
 
     def p_i(self, stream_id):
         if stream_id in self.streams:
@@ -117,6 +120,7 @@ class VideoExtractor():
         print("       size:         %s MiB (%s bytes)" % (round(stream['size'] / 1048576, 1), stream['size']))
         print("        url:         %s" % self.url)
         print()
+        return stream['size']
 
     def p(self, stream_id=None):
         maybe_print("site:                %s" % self.__class__.name)
@@ -124,13 +128,13 @@ class VideoExtractor():
         if stream_id:
             # Print the stream
             print("stream:")
-            self.p_stream(stream_id)
+            return_info = self.p_stream(stream_id)
 
         elif stream_id is None:
             # Print stream with best quality
             print("stream:              # Best quality")
             stream_id = self.streams_sorted[0]['id'] if 'id' in self.streams_sorted[0] else self.streams_sorted[0]['itag']
-            self.p_stream(stream_id)
+            return_info = self.p_stream(stream_id)
 
         elif stream_id == []:
             print("streams:             # Available quality and codecs")
@@ -140,17 +144,18 @@ class VideoExtractor():
                 itags = sorted(self.dash_streams,
                                key=lambda i: -self.dash_streams[i]['size'])
                 for stream in itags:
-                    self.p_stream(stream)
+                    return_info = self.p_stream(stream)
             # Print all other available streams
             print("    [ DEFAULT ] %s" % ('_' * 33))
             for stream in self.streams_sorted:
-                self.p_stream(stream['id'] if 'id' in stream else stream['itag'])
-
+                return_info = self.p_stream(stream['id'] if 'id' in stream else stream['itag'])
         if self.audiolang:
             print("audio-languages:")
             for i in self.audiolang:
                 print("    - lang:          {}".format(i['lang']))
                 print("      download-url:  {}\n".format(i['url']))
+
+        return return_info
 
     def p_playlist(self, stream_id=None):
         maybe_print("site:                %s" % self.__class__.name)
@@ -165,17 +170,16 @@ class VideoExtractor():
                 # Display the stream
                 stream_id = kwargs['stream_id']
                 if 'index' not in kwargs:
-                    self.p(stream_id)
+                    return self.p(stream_id)
                 else:
-                    self.p_i(stream_id)
+                    return self.p_i(stream_id)
             else:
                 # Display all available streams
                 if 'index' not in kwargs:
-                    self.p([])
+                    return self.p([])
                 else:
                     stream_id = self.streams_sorted[0]['id'] if 'id' in self.streams_sorted[0] else self.streams_sorted[0]['itag']
-                    self.p_i(stream_id)
-
+                    return self.p_i(stream_id)
         else:
             if 'stream_id' in kwargs and kwargs['stream_id']:
                 # Download the stream

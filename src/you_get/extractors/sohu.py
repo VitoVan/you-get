@@ -71,7 +71,9 @@ def sohu_download(url, output_dir = '.', output_file = None, merge = True, info_
             urls.append(real_url(host,vid,tvid,new,clipURL,ck))
 
     print_info(site_info, title, 'mp4', size)
-    if not info_only:
+    if info_only:
+        return size
+    else:
         download_urls(urls, title, 'mp4', size, output_dir, refer = url, merge = merge, output_file = output_file)
 
 site_info = "Sohu.com"

@@ -12,7 +12,9 @@ def yicai_download(url, output_dir = '.', output_file = None, merge = True, info
         url = match1(html, r'<source.+?src="([^"]+)"')
         _, ext, size = url_info(url)
         print_info(site_info, title, ext, size)
-        if not info_only:
+        if info_only:
+            return size
+        else:
             download_urls([url], title, ext, size, output_dir = output_dir, merge = merge, output_file = output_file)
 
 site_info = "*.yicai.com/video"

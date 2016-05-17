@@ -94,7 +94,9 @@ def letv_download_by_vid(vid,title, output_dir='.', output_file=None, merge=True
         size += tmp
 
     print_info(site_info, title, ext, size)
-    if not info_only:
+    if info_only:
+        return size
+    else:
         download_urls(urls, title, ext, size, output_dir=output_dir,output_file=output_file, merge=merge)
 
 def letvcloud_download_by_vu(vu, uu, title=None, output_dir='.', output_file=None, merge=True, info_only=False):
@@ -115,7 +117,9 @@ def letvcloud_download_by_vu(vu, uu, title=None, output_dir='.', output_file=Non
     size = urls_size(urls)
     ext = 'mp4'
     print_info(site_info, title, ext, size)
-    if not info_only:
+    if info_only:
+        return size
+    else:
         download_urls(urls, title, ext, size, output_dir=output_dir,output_file=output_file, merge=merge)
 
 def letvcloud_download(url, output_dir='.', output_file=None, merge=True, info_only=False):
